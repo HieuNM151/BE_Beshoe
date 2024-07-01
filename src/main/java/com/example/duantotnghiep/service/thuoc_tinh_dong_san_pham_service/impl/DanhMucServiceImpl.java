@@ -28,10 +28,6 @@ public class DanhMucServiceImpl implements DanhMucService {
     private DanhMucRepository danhMucRepository;
 
     private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    @Autowired
-    private AuditLogService auditLogService;
-    @Autowired
-    private TaiKhoanRepository taiKhoanRepository;
     @Override
     public List<DanhMuc> getAll() {
         return danhMucRepository.findByTrangThai(1);
@@ -52,22 +48,17 @@ public class DanhMucServiceImpl implements DanhMucService {
 
     @Override
     public MessageResponse create(DanhMucRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         DanhMuc danhMuc = new DanhMuc();
         danhMuc.setId(UUID.randomUUID());
         danhMuc.setTenDanhMuc(request.getTenDanhMuc());
         danhMuc.setTrangThai(request.getTrangThai());
         danhMuc.setNgayTao(timestamp);
         danhMucRepository.save(danhMuc);
-        auditLogService.writeAuditLogDanhmuc("Thêm Mới Danh Mục", username, taiKhoanUser.getEmail(), null,
-                "Tên danh mục: " + request.getTenDanhMuc() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                null);
         return MessageResponse.builder().message("Thêm thành công").build();
     }
 
     @Override
     public MessageResponse update(UUID id, DanhMucRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         Optional<DanhMuc> danhMucOptional= danhMucRepository.findById(id);
         if (danhMucOptional.isPresent()) {
             DanhMuc danhMuc = danhMucOptional.get();
@@ -75,9 +66,6 @@ public class DanhMucServiceImpl implements DanhMucService {
             danhMuc.setTrangThai(request.getTrangThai());
             danhMuc.setNgayCapNhat(timestamp);
             danhMucRepository.save(danhMuc);
-            auditLogService.writeAuditLogDanhmuc("Cập nhật Danh Mục", username, taiKhoanUser.getEmail(), null,
-                    "tên danh mục : " + request.getTenDanhMuc() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                    null);
             return MessageResponse.builder().message("Cập nhật thành công").build();
         } else {
             return MessageResponse.builder().message("Không tìm thấy thương hiệu với ID: " + id).build();

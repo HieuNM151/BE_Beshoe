@@ -41,7 +41,7 @@ public class ImageServiceImpl implements ImageService {
 
             boolean hasDefaultImage = findBySanPham.stream().anyMatch(Image::getIsDefault);
 
-            String folderName = "D:\\FE_DuAnTotNghiep\\assets\\ảnh giày"; // Tạo tên thư mục mới dựa trên UUID
+            String folderName = "D:\\DATN_BEESHOE\\assets\\ảnh giày"; // Tạo tên thư mục mới dựa trên UUID
 //
 //            File directory = new File(folderName);
 //            if (!directory.exists()) {

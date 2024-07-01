@@ -52,22 +52,17 @@ public class ChatLieuServiceImpl implements ChatLieuService {
 
     @Override
     public MessageResponse create(ChatLieuRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         ChatLieu chatLieu = new ChatLieu();
         chatLieu.setId(UUID.randomUUID());
         chatLieu.setTenChatLieu(request.getTenChatLieu());
         chatLieu.setTrangThai(request.getTrangThai());
         chatLieu.setNgayTao(timestamp);
         chatLieuRepository.save(chatLieu);
-        auditLogService.writeAuditLogChatlieu("Thêm Mới Chất Liệu", username, taiKhoanUser.getEmail(), null,
-                "Tên Chất liệu : " + request.getTenChatLieu() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                null);
         return MessageResponse.builder().message("Thêm thành công").build();
     }
 
     @Override
     public MessageResponse update(UUID id, ChatLieuRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         Optional<ChatLieu> chatLieuOptional= chatLieuRepository.findById(id);
         if (chatLieuOptional.isPresent()) {
             ChatLieu chatLieu = chatLieuOptional.get();
@@ -75,9 +70,6 @@ public class ChatLieuServiceImpl implements ChatLieuService {
             chatLieu.setTrangThai(request.getTrangThai());
             chatLieu.setNgayCapNhat(timestamp);
             chatLieuRepository.save(chatLieu);
-            auditLogService.writeAuditLogChatlieu("Cập Nhật Chất Liệu", username, taiKhoanUser.getEmail(), null,
-                    "Tên Chất liệu : " + request.getTenChatLieu() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                    null);
             return MessageResponse.builder().message("Cập nhật thành công").build();
         } else {
             return MessageResponse.builder().message("Không tìm thấy thương hiệu với ID: " + id).build();

@@ -28,10 +28,6 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
     private ThuongHieuRepository thuongHieuRepository;
 
     private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    @Autowired
-    private AuditLogService auditLogService;
-    @Autowired
-    private TaiKhoanRepository taiKhoanRepository;
     @Override
     public List<ThuongHieu> getAll() {
         return thuongHieuRepository.findByTrangThai(1);
@@ -51,23 +47,17 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
 
     @Override
     public MessageResponse create(ThuongHieuRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         ThuongHieu thuongHieu = new ThuongHieu();
         thuongHieu.setId(UUID.randomUUID());
         thuongHieu.setTenThuongHieu(request.getTenThuongHieu());
         thuongHieu.setTrangThai(request.getTrangThai());
         thuongHieu.setNgayTao(timestamp);
         thuongHieuRepository.save(thuongHieu);
-        auditLogService.writeAuditLogThuonghieu("Thêm Mới thương hiệu", username, taiKhoanUser.getEmail(), null,
-                "Tên Thương Hiệu : " + request.getTenThuongHieu() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                null);
-
         return MessageResponse.builder().message("Thêm thành công").build();
     }
 
     @Override
     public MessageResponse update(UUID id, ThuongHieuRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         Optional<ThuongHieu> optionalThuongHieu = thuongHieuRepository.findById(id);
         if (optionalThuongHieu.isPresent()) {
             ThuongHieu thuongHieu = optionalThuongHieu.get();
@@ -75,9 +65,6 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
             thuongHieu.setTrangThai(request.getTrangThai());
             thuongHieu.setNgayCapNhat(timestamp);
             thuongHieuRepository.save(thuongHieu);
-            auditLogService.writeAuditLogThuonghieu("Cập nhật thương hiệu", username, taiKhoanUser.getEmail(), null,
-                    "Tên Thương Hiệu : " + request.getTenThuongHieu() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                    null);
             return MessageResponse.builder().message("Cập nhật thành công").build();
         } else {
             return MessageResponse.builder().message("Không tìm thấy thương hiệu với ID: " + id).build();

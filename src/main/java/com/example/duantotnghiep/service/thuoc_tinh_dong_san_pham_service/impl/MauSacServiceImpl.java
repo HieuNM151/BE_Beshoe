@@ -27,10 +27,8 @@ public class MauSacServiceImpl implements MauSacService {
 
     @Autowired
     private MauSacRepository mauSacRepository;
-    @Autowired
-    private AuditLogService auditLogService;
-    @Autowired
-    private TaiKhoanRepository taiKhoanRepository;
+
+
 
     private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -54,25 +52,17 @@ public class MauSacServiceImpl implements MauSacService {
 
     @Override
     public MessageResponse create(MauSacRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         MauSac mauSac = new MauSac();
         mauSac.setId(UUID.randomUUID());
         mauSac.setTenMauSac(request.getTenMauSac());
         mauSac.setTrangThai(request.getTrangThai());
         mauSac.setNgayTao(timestamp);
         mauSacRepository.save(mauSac);
-
-        auditLogService.writeAuditLogMausac("Thêm Mới Màu Sắc", username, taiKhoanUser.getEmail(), null,
-                "Màu Sắc : " + request.getTenMauSac() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                null);
-
-
         return MessageResponse.builder().message("Thêm thành công").build();
     }
 
     @Override
     public MessageResponse update(UUID id, MauSacRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         Optional<MauSac> optionalMauSac= mauSacRepository.findById(id);
         if (optionalMauSac.isPresent()) {
             MauSac mauSac = optionalMauSac.get();
@@ -80,10 +70,6 @@ public class MauSacServiceImpl implements MauSacService {
             mauSac.setTrangThai(request.getTrangThai());
             mauSac.setNgayCapNhat(timestamp);
             mauSacRepository.save(mauSac);
-            auditLogService.writeAuditLogMausac("Cập nhật Màu Sắc", username, taiKhoanUser.getEmail(), null,
-                    "Màu Sắc : " + request.getTenMauSac() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                    null);
-
             return MessageResponse.builder().message("Cập nhật thành công").build();
         } else {
             return MessageResponse.builder().message("Không tìm thấy thương hiệu với ID: " + id).build();

@@ -28,10 +28,6 @@ public class KieuDeServiceImpl implements KieuDeService {
     private KieuDeRepository kieuDeRepository;
 
     private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    @Autowired
-    private AuditLogService auditLogService;
-    @Autowired
-    private TaiKhoanRepository taiKhoanRepository;
     @Override
     public List<KieuDe> getAll() {
         return kieuDeRepository.findAll();
@@ -52,24 +48,17 @@ public class KieuDeServiceImpl implements KieuDeService {
 
     @Override
     public MessageResponse create(KieuDeRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         KieuDe kieuDe = new KieuDe();
         kieuDe.setId(UUID.randomUUID());
         kieuDe.setTenDe(request.getTenDe());
         kieuDe.setTrangThai(request.getTrangThai());
         kieuDe.setNgayTao(timestamp);
         kieuDeRepository.save(kieuDe);
-        auditLogService.writeAuditLogKieude("Thêm Mới Kiểu Đế", username, taiKhoanUser.getEmail(), null,
-                "Kiểu Đế : " + request.getTenDe() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                null);
-
-
         return MessageResponse.builder().message("Thêm thành công").build();
     }
 
     @Override
     public MessageResponse update(UUID id, KieuDeRequest request,String username) throws IOException, CsvValidationException {
-        TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         Optional<KieuDe> kieuDeOptional= kieuDeRepository.findById(id);
         if (kieuDeOptional.isPresent()) {
             KieuDe kieuDe = kieuDeOptional.get();
@@ -77,10 +66,6 @@ public class KieuDeServiceImpl implements KieuDeService {
             kieuDe.setTrangThai(request.getTrangThai());
             kieuDe.setNgayCapNhat(timestamp);
             kieuDeRepository.save(kieuDe);
-            auditLogService.writeAuditLogKieude("Cập nhật Kiểu Đế", username, taiKhoanUser.getEmail(), null,
-                    "Kiểu Đế : " + request.getTenDe() + "," + "Trạng Thái: " + request.getTrangThai() ,null,null,
-                    null);
-
 
             return MessageResponse.builder().message("Cập nhật thành công").build();
         } else {
