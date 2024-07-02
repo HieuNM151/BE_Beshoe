@@ -10,10 +10,10 @@ public class VnPayConfigTaiQuay {
 
     public static String vnp_Returnurl = "http://127.0.0.1:5505/src/admin/index-admin.html#/transaction-done";
 
-    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.htm";
 
-    public static String vnp_TmnCode = "JBGBHR8E";
-
+    public static String vnp_TmnCode = "JBGBHRRH";
+//    JBGBHR8E
     public static String secretKey = "UPVBHGWBJTCUPIBRBTXBUBIRTDLNKFZA";
 
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
