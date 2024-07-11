@@ -25,8 +25,6 @@ public class HoaDonController {
     @Autowired
     private HoaDonServiceImpl hoaDonService;
 
-    @Autowired
-    private TaiKhoanService.TaiKhoanServiceImpl taiKhoanService;
 
     @GetMapping("hien-thi")
     public ResponseEntity<List<HoaDonDTOResponse>> getAll(
@@ -36,21 +34,9 @@ public class HoaDonController {
             @RequestParam(name = "ma", required = false) String ma,
             @RequestParam(name = "soDienThoai", required = false) String soDienThoai,
             @RequestParam(name = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(name = "pageSize", defaultValue = "20") Integer pageSize,
-            Principal principal
+            @RequestParam(name = "pageSize", defaultValue = "20") Integer pageSize
     ) {
-        String username = principal.getName();
-        Optional<TaiKhoan> taiKhoan = taiKhoanService.findByUserName(username);
-        String role = taiKhoan.get().getLoaiTaiKhoan().getName().name();
-        if (role == "STAFF") {
-            if (trangThaiHD == 1) {
-                return new ResponseEntity<>(hoaDonService.getAllHoaDonCTTStaff(loaiDon, ma, soDienThoai, pageNumber, pageSize), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(hoaDonService.getAllHoaDonStaff(trangThaiHD, loaiDon, ma, soDienThoai, username, pageNumber, pageSize), HttpStatus.OK);
-            }
-        } else {
             return new ResponseEntity<>(hoaDonService.getAllHoaDonAdmin(trangThaiHD, loaiDon, tenNhanVien, ma, soDienThoai, pageNumber, pageSize), HttpStatus.OK);
-        }
     }
 
     @PutMapping("update/{hoaDonId}")

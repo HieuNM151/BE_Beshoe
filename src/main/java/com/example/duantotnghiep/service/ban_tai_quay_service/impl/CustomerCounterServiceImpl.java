@@ -56,6 +56,9 @@ public class CustomerCounterServiceImpl implements CustomerCounterService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    SendConfirmationEmail sendConfirmationEmail;
+
     @Override
     public List<KhachHangResponse> getKhachHang(Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -100,7 +103,7 @@ public class CustomerCounterServiceImpl implements CustomerCounterService {
         diaChi.setTrangThai(1);
         diaChiRepository.save(diaChi);
         if (sendEmail) {
-            SendConfirmationEmail.sendConfirmationEmailStatic(taiKhoan.getEmail(), taiKhoan.getUsername(), converted, javaMailSender);
+            sendConfirmationEmail.sendConfirmationEmailStatic(taiKhoan.getEmail(), taiKhoan.getUsername(), converted);
             System.out.println("gửi mail");
         }
         return MessageResponse.builder().message("Thêm Thành Công").build();

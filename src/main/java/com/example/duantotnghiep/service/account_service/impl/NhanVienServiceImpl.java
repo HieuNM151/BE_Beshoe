@@ -68,6 +68,8 @@ public class NhanVienServiceImpl implements NhanVienCustomService {
     @Autowired
     private AuditLogService auditLogService;
 
+    @Autowired
+    SendConfirmationEmail sendConfirmationEmail;
 
 
     @Override
@@ -95,7 +97,7 @@ public class NhanVienServiceImpl implements NhanVienCustomService {
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         List<NhanVienOrderResponse> taiKhoans = khachHangRepository.listNv();
         try {
-            Files.copy(file.getInputStream(), Paths.get("D:\\FE_DuAnTotNghiep\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), Paths.get("D:\\DATN_BEESHOE\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -128,11 +130,9 @@ public class NhanVienServiceImpl implements NhanVienCustomService {
         diaChi.setTrangThai(1);
         diaChiRepository.save(diaChi);
         if (sendEmail) {
-            SendConfirmationEmail.sendConfirmationEmailStatic(taiKhoan.getEmail(), taiKhoan.getUsername(), converted, javaMailSender);
+            sendConfirmationEmail.sendConfirmationEmailStatic(taiKhoan.getEmail(), taiKhoan.getUsername(), converted);
             System.out.println("gửi mail");
         }
-        auditLogService.writeAuditLogNhanvien("Tạo Nhân viên", username, taiKhoanUser.getEmail(), null, "Họ tên:" +request.getFullName()+","+"Ngày sinh:" +request.getNgaySinh()+","+"Số điện thoại"+ request.getSoDienThoai()+","+"Giới tính"+request.getGioiTinh()+","+"Email:"+request.getEmail()+","+"Địa chỉ:" +request.getDiaChi()+","+"Trạng thái:"+request.getTrangThai(),
-                null, null, null);
         return MessageResponse.builder().message("Thêm Thành Công").build();
     }
 
@@ -142,7 +142,7 @@ public class NhanVienServiceImpl implements NhanVienCustomService {
         Optional<TaiKhoan> optionalTaiKhoan = khachHangRepository.findById(id);
         TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         try {
-            Files.copy(file.getInputStream(), Paths.get("D:\\FE_DuAnTotNghiep\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), Paths.get("D:\\DATN_BEESHOE\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -163,8 +163,6 @@ public class NhanVienServiceImpl implements NhanVienCustomService {
 
             diaChiRepository.save(diaChi);
             khachHangRepository.save(taiKhoan);
-            auditLogService.writeAuditLogNhanvien("Cập nhật nhân viên", username, taiKhoanUser.getEmail(), null, "Họ tên:" +request.getFullName()+","+"Ngày sinh:" +request.getNgaySinh()+","+"Số điện thoại"+ request.getSoDienThoai()+","+"Giới tính"+request.getGioiTinh()+","+"Email:"+request.getEmail()+","+"Địa chỉ:" +request.getDiaChi()+","+"Trạng thái:"+request.getTrangThai(),
-                    null, null, null);
             return MessageResponse.builder().message("Cập Nhật Thành Công").build();
         } else {
             return MessageResponse.builder().message("Không Tìm Thấy Khách Hàng").build();

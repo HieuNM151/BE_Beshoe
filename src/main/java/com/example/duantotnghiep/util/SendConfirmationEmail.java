@@ -2,26 +2,33 @@ package com.example.duantotnghiep.util;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SendConfirmationEmail {
 
-    public static void sendConfirmationEmailStatic(String email, String username, String password, JavaMailSender mailSender) {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
+    private final JavaMailSender javaMailSender;
+
+    public SendConfirmationEmail(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
+    @Async("taskExecutor")
+    public void sendConfirmationEmailStatic(String email, String username, String password) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Chào mừng bạn đến với Nice Shoe");
+
         try {
             helper.setTo(email);
-            helper.setSubject("Chào mừng bạn đến với Nice Shoe");
+            helper.setSubject("Chào mừng bạn đến với BEE Shoe");
 
-            String htmlMsg = "<h1>Chào mừng bạn đến với <span style='color: #ff9900;'>NICE SHOE</span> của chúng tôi!</h1>\n" +
-                    "<p>Xin chân thành cảm ơn bạn đã đăng ký nhận <span style='color: #ff9900;'>NICE SHOE</span> của chúng tôi. Chúng tôi sẽ cung cấp cho bạn thông tin cập\n" +
+            String htmlMsg = "<h1>Chào mừng bạn đến với <span style='color: #ff9900;'>BEE SHOE</span> của chúng tôi!</h1>\n" +
+                    "<p>Xin chân thành cảm ơn bạn đã đăng ký nhận <span style='color: #ff9900;'>BEE SHOE</span> của chúng tôi. Chúng tôi sẽ cung cấp cho bạn thông tin cập\n" +
                     "    nhật về tin tức và ưu đãi mới nhất.</p>\n" +
-                    "<h3>Ưu điểm của <span style='color: #ff9900;'>NICE SHOE</span>:</h3>\n" +
+                    "<h3>Ưu điểm của <span style='color: #ff9900;'>BEE SHOE</span>:</h3>\n" +
                     "<ul>\n" +
                     "    <li>Thông tin mới nhất về sản phẩm và dịch vụ của chúng tôi</li>\n" +
                     "    <li>Ưu đãi đặc biệt và khuyến mãi hấp dẫn</li>\n" +
@@ -35,7 +42,7 @@ public class SendConfirmationEmail {
                     "<p>Password: <strong>" + password + "</strong></p>";
 
             helper.setText(htmlMsg, true);
-            mailSender.send(mimeMessage);
+            javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
             // Xử lý ngoại lệ nếu gửi email thất bại
             e.printStackTrace();

@@ -61,6 +61,8 @@ public class QLKhachHangImpl implements QLKhachHangService {
     @Autowired
     private TaiKhoanRepository taiKhoanRepository;
 
+    @Autowired
+    SendConfirmationEmail sendConfirmationEmail;
 
     @Override
     public List<QLKhachHangResponse> getQLKhachHang(Integer trangThai, String name, String soDienThoai, String maTaiKhoan, Integer pageNumber, Integer pageSize) {
@@ -75,7 +77,7 @@ public class QLKhachHangImpl implements QLKhachHangService {
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         List<TaiKhoan> taiKhoans = khachHangRepository.listKhachHang();
         try {
-            Files.copy(file.getInputStream(), Paths.get("D:\\FE_DuAnTotNghiep\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), Paths.get("D:\\DATN_BEESHOE\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -107,10 +109,9 @@ public class QLKhachHangImpl implements QLKhachHangService {
         diaChi.setTrangThai(1);
         diaChiRepository.save(diaChi);
         if (sendEmail) {
-            SendConfirmationEmail.sendConfirmationEmailStatic(taiKhoan.getEmail(), taiKhoan.getUsername(), converted, javaMailSender);
+            sendConfirmationEmail.sendConfirmationEmailStatic(taiKhoan.getEmail(), taiKhoan.getUsername(), converted);
             System.out.println("gửi mail");
         }
-        auditLogService.writeAuditLogKhachhang("Tạo Khách hàng", username, taiKhoanUser.getEmail(), null,"Họ tên:" +createQLKhachHangRequest.getTen()+","+"Ngày sinh:"+createQLKhachHangRequest.getNgaySinh()+","+"Giới tính:" +createQLKhachHangRequest.getGioiTinh()+","+createQLKhachHangRequest.getSoDienThoai()+"," + "email:"+createQLKhachHangRequest.getEmail()+","+"Địa chỉ :" +createQLKhachHangRequest.getDiaChi() +","+"Trạng thái :" +createQLKhachHangRequest.getTrangThai()  ,null,null,null);
 
         return MessageResponse.builder().message("Thêm Thành Công").build();
     }
@@ -127,7 +128,7 @@ public class QLKhachHangImpl implements QLKhachHangService {
         TaiKhoan taiKhoanUser = taiKhoanRepository.findByUsername(username).orElse(null);
         Optional<TaiKhoan> optionalTaiKhoan = khachHangRepository.findById(khachHangId);
         try {
-            Files.copy(file.getInputStream(), Paths.get("D:\\FE_DuAnTotNghiep\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), Paths.get("D:\\DATN_BEESHOE\\assets\\ảnh giày", fileName), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -147,7 +148,6 @@ public class QLKhachHangImpl implements QLKhachHangService {
             diaChi.setDiaChi(createQLKhachHangRequest.getDiaChi());
             diaChiRepository.save(diaChi);
             khachHangRepository.save(taiKhoan);
-            auditLogService.writeAuditLogKhachhang("Cập nhật khách hàng", username, taiKhoanUser.getEmail(), null,"Họ tên:" +createQLKhachHangRequest.getTen()+","+"Ngày sinh:"+createQLKhachHangRequest.getNgaySinh()+","+"Giới tính:" +createQLKhachHangRequest.getGioiTinh()+","+createQLKhachHangRequest.getSoDienThoai()+"," + "email:"+createQLKhachHangRequest.getEmail()+","+"Địa chỉ :" +createQLKhachHangRequest.getDiaChi() +","+"Trạng thái :" +createQLKhachHangRequest.getTrangThai()  ,null,null,null);
 
             return MessageResponse.builder().message("Cập Nhật Thành Công").build();
         } else {
