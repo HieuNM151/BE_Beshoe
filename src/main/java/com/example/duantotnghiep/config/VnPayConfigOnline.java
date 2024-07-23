@@ -15,7 +15,7 @@ public class VnPayConfigOnline {
 
     public static String vnp_TmnCode = "RRVJYMLW";
 
-    public static String secretKey = "WEV8R5Z3QOS6CUEMUAGEB3I2BV3HDGI9";
+    public static String secretKey = "HVFBS4UNX6F1O177PIW4DMDPEHZX9MPM";
 
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
 
