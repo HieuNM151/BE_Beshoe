@@ -163,12 +163,12 @@ public class UserServiceImpl implements UserService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
         try {
             helper.setTo(email);
-            helper.setSubject("Chào mừng bạn đến với Nice Shoe");
+            helper.setSubject("Chào mừng bạn đến với Bee Shoe");
 
-            String htmlMsg = "<h1>Chào mừng bạn đến với <span style='color: #ff9900;'>NICE SHOE</span> của chúng tôi!</h1>\n" +
-                    "<p>Xin chân thành cảm ơn bạn đã đăng ký nhận <span style='color: #ff9900;'>NICE SHOE</span> của chúng tôi. Chúng tôi sẽ cung cấp cho bạn thông tin cập\n" +
+            String htmlMsg = "<h1>Chào mừng bạn đến với <span style='color: #ff9900;'>BEE SHOE</span> của chúng tôi!</h1>\n" +
+                    "<p>Xin chân thành cảm ơn bạn đã đăng ký nhận <span style='color: #ff9900;'>BEE SHOE</span> của chúng tôi. Chúng tôi sẽ cung cấp cho bạn thông tin cập\n" +
                     "    nhật về tin tức và ưu đãi mới nhất.</p>\n" +
-                    "<h3>Ưu điểm của <span style='color: #ff9900;'>NICE SHOE</span>:</h3>\n" +
+                    "<h3>Ưu điểm của <span style='color: #ff9900;'>BEE SHOE</span>:</h3>\n" +
                     "<ul>\n" +
                     "    <li>Thông tin mới nhất về sản phẩm và dịch vụ của chúng tôi</li>\n" +
                     "    <li>Ưu đãi đặc biệt và khuyến mãi hấp dẫn</li>\n" +
